@@ -17,7 +17,7 @@ load_dotenv()
 openai_key = st.secrets["OPENAI_API_KEY"]
 
 # === Streamlit Page Config ===
-st.set_page_config(page_title="📄 AI Resume Analyzer", layout="wide")
+st.set_page_config(page_title="\ud83d\udcc4 AI Resume Analyzer", layout="wide")
 
 # === Custom Styling ===
 st.markdown("""
@@ -39,15 +39,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === Title & Subtitle ===
-st.markdown('<div class="title">🚀 AI-Powered Resume Analyzer</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">\ud83d\ude80 AI-Powered Resume Analyzer</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Upload your resume to get ATS score and expert feedback</div>', unsafe_allow_html=True)
 
 # === File Upload ===
-uploaded_file = st.file_uploader("📤 Upload your Resume (PDF)", type=["pdf"])
+uploaded_file = st.file_uploader("\ud83d\udcc4 Upload your Resume (PDF)", type=["pdf"])
 
 # === Resume Processing ===
 if uploaded_file:
-    with st.spinner("🔍 Reading and analyzing your resume..."):
+    with st.spinner("\ud83d\udd0d Reading and analyzing your resume..."):
 
         # --- Extract Text from PDF ---
         def read_pdf(file_obj):
@@ -94,12 +94,16 @@ if uploaded_file:
         ats_score_match = re.search(r'ATS Score.*?(\d{1,3})', response, re.IGNORECASE)
         ats_score = int(ats_score_match.group(1)) if ats_score_match else None
 
+        # Add dynamic ATS score line to the response
+        if ats_score is not None:
+            response = f"An estimated ATS Score (out of 100): {ats_score}/100\n\n" + response
+
     # === Display Results ===
-    st.success("✅ Analysis Complete!")
+    st.success("\u2705 Analysis Complete!")
 
     # --- ATS Score Gauge ---
     if ats_score is not None:
-        st.subheader("📊 ATS Score")
+        st.subheader("\ud83d\udcca ATS Score")
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=ats_score,
@@ -121,8 +125,8 @@ if uploaded_file:
         st.warning("Could not extract ATS score from the response.")
 
     # --- Resume Feedback ---
-    st.subheader("📝 Resume Feedback")
-    st.markdown(f"```markdown\n{response}\n```")
+    st.subheader("\ud83d\udcdd Resume Feedback")
+    st.markdown(f"```markdown\n{response}\n```)  ")
 
 else:
     st.info("Please upload a resume to begin the analysis.")
