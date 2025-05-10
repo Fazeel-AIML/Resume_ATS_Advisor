@@ -1,5 +1,5 @@
 langchain
-chromadb
+faiss-cpu
 openai
 streamlit
 PyPDF2

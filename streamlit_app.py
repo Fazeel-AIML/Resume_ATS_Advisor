@@ -5,7 +5,7 @@ import streamlit as st
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
@@ -67,7 +67,7 @@ if uploaded_file:
         split_docs = splitter.split_documents(documents)
 
         embeddings = OpenAIEmbeddings(openai_api_key=openai_key)
-        vectorstore = Chroma.from_documents(split_docs, embedding=embeddings)
+        vectorstore = FAISS.from_documents(split_docs, embedding=embeddings)
 
         vectorstore.persist()
 
