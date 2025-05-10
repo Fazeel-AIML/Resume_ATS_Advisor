@@ -3,4 +3,5 @@ langchain-community
 plotly
 openai
 pypdf2
-streamlit   
+streamlit
+chromadb
