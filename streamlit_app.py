@@ -91,7 +91,7 @@ if uploaded_file:
         response = qa_chain.run(formatted_question)
 
         # --- Extract ATS Score using regex ---
-        ats_score_match = re.search(r'An estimated ATS Score.*?(\d{1,3})', response, re.IGNORECASE)
+        ats_score_match = re.search(r'ATS Score \(out of 100\):\s*(\d{1,3})/100', response)
         ats_score = int(ats_score_match.group(1)) if ats_score_match else None
 
         # === Display Results ===
