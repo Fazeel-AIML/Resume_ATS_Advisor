@@ -67,7 +67,11 @@ if uploaded_file:
         split_docs = splitter.split_documents(documents)
 
         embeddings = OpenAIEmbeddings(openai_api_key=openai_key)
-        vectorstore = FAISS.from_documents(split_docs, embedding=embeddings)
+        try:
+            vectorstore = FAISS.from_documents(split_docs, embedding=embeddings)
+        except ImportError as e:
+            st.error(f"ImportError: {e}")
+            raise
 
         vectorstore.persist()
 

@@ -6,3 +6,5 @@ PyPDF2
 plotly
 python-dotenv
 langchain-community
+tiktoken
+langchain[openai]
