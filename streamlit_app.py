@@ -91,15 +91,11 @@ if uploaded_file:
         response = qa_chain.run(formatted_question)
 
         # --- Extract ATS Score using regex ---
-        ats_score_match = re.search(r'ATS Score.*?(\d{1,3})', response, re.IGNORECASE)
+        ats_score_match = re.search(r'An estimated ATS Score.*?(\d{1,3})', response, re.IGNORECASE)
         ats_score = int(ats_score_match.group(1)) if ats_score_match else None
 
-        # Add dynamic ATS score line to the response
-        if ats_score is not None:
-            response = f"An estimated ATS Score (out of 100): {ats_score}/100\n\n" + response
-
-    # === Display Results ===
-    st.success("✅ Analysis Complete!")
+        # === Display Results ===
+        st.success("✅ Analysis Complete!")
 
     # --- ATS Score Gauge ---
     if ats_score is not None:
