@@ -50,7 +50,7 @@ st.markdown("""
         }
         .score {
             font-size: 2em;
-            color: #333;
+            color: #5555;
             text-align: center;
         }
     </style>
