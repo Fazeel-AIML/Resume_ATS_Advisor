@@ -19,7 +19,6 @@ openai_key = st.secrets["OPENAI_API_KEY"]
 # === Streamlit Page Config ===
 st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
 
-
 # === Custom Styling ===
 st.markdown("""
     <style>
@@ -40,15 +39,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === Title & Subtitle ===
-st.markdown('<div class="title">\ud83d\ude80 AI-Powered Resume Analyzer</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">🚀 AI-Powered Resume Analyzer</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Upload your resume to get ATS score and expert feedback</div>', unsafe_allow_html=True)
 
 # === File Upload ===
-uploaded_file = st.file_uploader("\ud83d\udcc4 Upload your Resume (PDF)", type=["pdf"])
+uploaded_file = st.file_uploader("📄 Upload your Resume (PDF)", type=["pdf"])
 
 # === Resume Processing ===
 if uploaded_file:
-    with st.spinner("\ud83d\udd0d Reading and analyzing your resume..."):
+    with st.spinner("🔍 Reading and analyzing your resume..."):
 
         # --- Extract Text from PDF ---
         def read_pdf(file_obj):
@@ -100,11 +99,11 @@ if uploaded_file:
             response = f"An estimated ATS Score (out of 100): {ats_score}/100\n\n" + response
 
     # === Display Results ===
-    st.success("\u2705 Analysis Complete!")
+    st.success("✅ Analysis Complete!")
 
     # --- ATS Score Gauge ---
     if ats_score is not None:
-        st.subheader("\ud83d\udcca ATS Score")
+        st.subheader("📊 ATS Score")
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=ats_score,
@@ -126,8 +125,8 @@ if uploaded_file:
         st.warning("Could not extract ATS score from the response.")
 
     # --- Resume Feedback ---
-    st.subheader("\ud83d\udcdd Resume Feedback")
-    st.markdown(f"```markdown\n{response}\n```)  ")
+    st.subheader("📝 Resume Feedback")
+    st.markdown(f"```markdown\n{response}\n```")
 
 else:
     st.info("Please upload a resume to begin the analysis.")
