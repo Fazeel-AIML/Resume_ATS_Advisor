@@ -17,7 +17,8 @@ load_dotenv()
 openai_key = st.secrets["OPENAI_API_KEY"]
 
 # === Streamlit Page Config ===
-st.set_page_config(page_title="\ud83d\udcc4 AI Resume Analyzer", layout="wide")
+st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
+
 
 # === Custom Styling ===
 st.markdown("""
