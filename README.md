@@ -30,8 +30,8 @@ This is an intelligent web application built with **Streamlit**, **LangChain**, 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/resume-analyzer.git
-   cd resume-analyzer
+   git clonehttps://github.com/Fazeel-AIML/Resume_Analyzer_Advisor
+   cd Resume_Analyzer_Advisor
 2. **Install Dependencies:**
    ```bash
    pip install -r requirements.txt
