@@ -2,7 +2,6 @@ import os
 import re
 import PyPDF2
 import streamlit as st
-import plotly.graph_objects as go
 from dotenv import load_dotenv
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
@@ -12,14 +11,14 @@ from langchain.prompts import PromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 
-# === Load Environment Variables ===
+# === Load API Key from Secrets ===
 load_dotenv()
 openai_key = st.secrets["OPENAI_API_KEY"]
 
-# === Streamlit Page Config ===
+# === Streamlit Configuration ===
 st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
 
-# === Custom Styling ===
+# === Page Styling ===
 st.markdown("""
     <style>
         .title {
@@ -30,26 +29,39 @@ st.markdown("""
             margin-bottom: 0.2em;
         }
         .subtitle {
-            font-size: 1.5em;
+            font-size: 1.4em;
             text-align: center;
-            color: #777;
+            color: #555;
             font-family: 'Segoe UI', sans-serif;
+        }
+        .section-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-top: 2em;
+            color: #2E8B57;
+        }
+        .box {
+            background-color: #f7f7f7;
+            border-left: 5px solid #4CAF50;
+            padding: 1em;
+            margin-top: 1em;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # === Title & Subtitle ===
 st.markdown('<div class="title">🚀 AI-Powered Resume Analyzer</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Upload your resume to get ATS score and expert feedback</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Upload your resume (PDF) to get your ATS Score and expert feedback</div>', unsafe_allow_html=True)
 
 # === File Upload ===
-uploaded_file = st.file_uploader("📄 Upload your Resume (PDF)", type=["pdf"])
+uploaded_file = st.file_uploader("📄 Upload Resume", type=["pdf"])
 
-# === Resume Processing ===
 if uploaded_file:
-    with st.spinner("🔍 Reading and analyzing your resume..."):
+    with st.spinner("🔍 Analyzing your resume..."):
 
-        # --- Extract Text from PDF ---
+        # --- Read PDF ---
         def read_pdf(file_obj):
             text = ""
             reader = PyPDF2.PdfReader(file_obj)
@@ -62,67 +74,54 @@ if uploaded_file:
         pdf_text = read_pdf(uploaded_file)
         documents = [Document(page_content=pdf_text)]
 
-        # --- Text Splitting & Embedding ---
+        # --- Text Splitting ---
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
         split_docs = splitter.split_documents(documents)
 
+        # --- Embedding and Vector Store ---
         embeddings = OpenAIEmbeddings(openai_api_key=openai_key)
-        try:
-            vectorstore = FAISS.from_documents(split_docs, embedding=embeddings)
-        except ImportError as e:
-            st.error(f"ImportError: {e}")
-            raise
+        vectorstore = FAISS.from_documents(split_docs, embedding=embeddings)
 
-        # --- LLM QA Chain ---
-        llm = OpenAI(openai_api_key=openai_key)
+        # --- Prompt Template ---
         prompt = PromptTemplate.from_template("""
-        You are a highly professional ATS Resume Analyzer. Based on the context below (a resume), provide:
-        1. An estimated ATS Score (out of 100).
-        2. Detailed and constructive feedback on how to improve the resume.
-
-        Context:
+        You are an ATS (Applicant Tracking System) Resume Evaluator.
+        Given the resume content below, please provide:
+        1. An estimated ATS Score out of 100 (clearly state it).
+        2. Professional feedback and suggestions for improvement.
+        
+        Resume:
         {context}
         """)
+
         formatted_question = prompt.format(context=pdf_text)
 
+        # --- LLM QA Chain ---
         retriever = vectorstore.as_retriever()
+        llm = OpenAI(openai_api_key=openai_key)
         qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
-
         response = qa_chain.run(formatted_question)
 
-        # --- Extract ATS Score using regex ---
-        ats_score_match = re.search(r'ATS Score \(out of 100\):\s*(\d{1,3})/100', response)
+        # --- Extract ATS Score ---
+        ats_score_match = re.search(r'(?i)ATS Score.*?(\d{1,3})', response)
         ats_score = int(ats_score_match.group(1)) if ats_score_match else None
 
-        # === Display Results ===
-        st.success("✅ Analysis Complete!")
+        # === Display Result ===
+        st.success("✅ Resume Analysis Complete!")
 
-    # --- ATS Score Gauge ---
-    if ats_score is not None:
-        st.subheader("📊 ATS Score")
-        fig = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=ats_score,
-            domain={'x': [0, 1], 'y': [0, 1]},
-            title={'text': "ATS Compatibility", 'font': {'size': 24}},
-            gauge={
-                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "darkblue"},
-                'bar': {'color': "#4CAF50"},
-                'bgcolor': "white",
-                'steps': [
-                    {'range': [0, 50], 'color': '#ffcccc'},
-                    {'range': [50, 75], 'color': '#fff0b3'},
-                    {'range': [75, 100], 'color': '#d4edda'}
-                ],
-            }
-        ))
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.warning("Could not extract ATS score from the response.")
+        # === ATS Score Section ===
+        st.markdown('<div class="section-title">📈 ATS Score</div>', unsafe_allow_html=True)
+        if ats_score is not None:
+            st.markdown(f"""
+                <div class="box">
+                Your estimated ATS Score is: **{ats_score} / 100**
+                </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ ATS Score could not be extracted from the model's response.")
 
-    # --- Resume Feedback ---
-    st.subheader("📝 Resume Feedback")
-    st.markdown(f"```markdown\n{response}\n```")
+        # === Feedback Section ===
+        st.markdown('<div class="section-title">💡 Feedback & Advice</div>', unsafe_allow_html=True)
+        st.markdown(f"<div class='box'>{response}</div>", unsafe_allow_html=True)
 
 else:
-    st.info("Please upload a resume to begin the analysis.")
+    st.info("📎 Please upload a resume to begin the analysis.")
