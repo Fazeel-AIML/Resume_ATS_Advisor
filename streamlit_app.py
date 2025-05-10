@@ -14,7 +14,7 @@ from langchain.schema import Document
 
 # === Load Environment Variables ===
 load_dotenv()
-openai_key = os.getenv("OPENAI_API_KEY")
+openai_key = st.secrets["OPENAI_API_KEY"]
 
 # === Streamlit Page Config ===
 st.set_page_config(page_title="📄 AI Resume Analyzer", layout="wide")
