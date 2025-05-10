@@ -38,7 +38,7 @@ st.markdown("""
             font-family: 'Segoe UI', sans-serif;
         }
         .section {
-            background-color: #4CAF50;  /* Green background for contrast */
+            background-color: #ffffff;
             padding: 2em;
             margin: 2em 0;
             border-radius: 15px;
@@ -52,7 +52,6 @@ st.markdown("""
             font-size: 2em;
             color: white;  /* White text for ATS score */
             text-align: center;
-            background-color: #4CAF50;  /* Green background for contrast */
             padding: 0.5em;
             border-radius: 10px;
         }
