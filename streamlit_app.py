@@ -67,7 +67,8 @@ if uploaded_file:
         split_docs = splitter.split_documents(documents)
 
         embeddings = OpenAIEmbeddings(openai_api_key=openai_key)
-        vectorstore = Chroma.from_documents(split_docs, embedding=embeddings, persist_directory="./chroma_store")
+        vectorstore = Chroma.from_documents(split_docs, embedding=embeddings)
+
         vectorstore.persist()
 
         # --- LLM QA Chain ---

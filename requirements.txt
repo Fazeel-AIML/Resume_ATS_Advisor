@@ -1,7 +1,8 @@
 langchain
-langchain-community
-plotly
-openai
-pypdf2
-streamlit
 chromadb
+openai
+streamlit
+PyPDF2
+plotly
+python-dotenv
+langchain-community
