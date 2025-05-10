@@ -50,8 +50,11 @@ st.markdown("""
         }
         .score {
             font-size: 2em;
-            color: #5555;
+            color: white;  /* White text for ATS score */
             text-align: center;
+            background-color: #4CAF50;  /* Green background for contrast */
+            padding: 0.5em;
+            border-radius: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
