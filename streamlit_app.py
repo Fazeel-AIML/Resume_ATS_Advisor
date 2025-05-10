@@ -38,7 +38,7 @@ st.markdown("""
             font-family: 'Segoe UI', sans-serif;
         }
         .section {
-            background-color: #ffffff;
+            background-color: #4CAF50;  /* Green background for contrast */
             padding: 2em;
             margin: 2em 0;
             border-radius: 15px;
