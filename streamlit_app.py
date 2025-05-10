@@ -73,8 +73,6 @@ if uploaded_file:
             st.error(f"ImportError: {e}")
             raise
 
-        vectorstore.persist()
-
         # --- LLM QA Chain ---
         llm = OpenAI(openai_api_key=openai_key)
         prompt = PromptTemplate.from_template("""
