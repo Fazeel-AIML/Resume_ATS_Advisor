@@ -1,0 +1,6 @@
+langchain
+langchain-community
+plotly
+openai
+pypdf2
+streamlit   
